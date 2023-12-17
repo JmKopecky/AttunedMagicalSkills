@@ -1,5 +1,8 @@
-package dev.prognitio.ams;
+package dev.prognitio.ams.events;
 
+import dev.prognitio.ams.ACDataProvider;
+import dev.prognitio.ams.Ams;
+import dev.prognitio.ams.PlayerDataStorage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;

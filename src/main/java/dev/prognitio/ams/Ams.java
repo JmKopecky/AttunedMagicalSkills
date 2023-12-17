@@ -1,6 +1,7 @@
 package dev.prognitio.ams;
 
 import com.mojang.logging.LogUtils;
+import dev.prognitio.ams.networking.ModNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -47,7 +48,7 @@ public class Ams
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         // Some common setup code
-
+        ModNetworking.register();
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
