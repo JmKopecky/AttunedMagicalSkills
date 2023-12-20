@@ -32,6 +32,31 @@ public class ModNetworking {
                 .encoder(TriggerSkillCS::toBytes)
                 .consumerMainThread(TriggerSkillCS::handle).add();
 
+        net.messageBuilder(SetSelectedClassCS.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(SetSelectedClassCS::new)
+                .encoder(SetSelectedClassCS::toBytes)
+                .consumerMainThread(SetSelectedClassCS::handle).add();
+
+        net.messageBuilder(SyncCooldownSC.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncCooldownSC::new)
+                .encoder(SyncCooldownSC::toBytes)
+                .consumerMainThread(SyncCooldownSC::handle).add();
+
+        net.messageBuilder(SyncIsDataSetSC.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncIsDataSetSC::new)
+                .encoder(SyncIsDataSetSC::toBytes)
+                .consumerMainThread(SyncIsDataSetSC::handle).add();
+
+        net.messageBuilder(SyncAttunedClassDataSC.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncAttunedClassDataSC::new)
+                .encoder(SyncAttunedClassDataSC::toBytes)
+                .consumerMainThread(SyncAttunedClassDataSC::handle).add();
+
+        net.messageBuilder(OpenSelectionMenuSC.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(OpenSelectionMenuSC::new)
+                .encoder(OpenSelectionMenuSC::toBytes)
+                .consumerMainThread(OpenSelectionMenuSC::handle).add();
+
 
 
     }

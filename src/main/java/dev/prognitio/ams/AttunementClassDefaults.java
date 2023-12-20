@@ -50,6 +50,15 @@ public enum AttunementClassDefaults {
 
     public int getCooldownScale() {return this.cooldownScale;}
 
+    public static AttunementClassDefaults getFromString(String target) {
+        switch (target) {
+            case "necromancer" -> {
+                return NECROMANCER;
+            }
+        }
+        return null;
+    }
+
     public HashMap<String, Double> getPassiveBonuses() {
         return this.passiveBonuses;
     }
@@ -57,13 +66,25 @@ public enum AttunementClassDefaults {
     /*
     Passive Bonuses:
         antihuman: bonus damage to villagers and (MobType == ILLAGER)
+        UNNAMED: Killed hostile mobs and players have a chance to summon an undead in their place (necromancer)
+        Plague: Hurt enemies have a chance to become infected with some effect that can spread to other enemies (hemomancer)
      */
 
     /*
-    Lore:
+    Ideas:
         Necromancer:
-
+            Summon armies of the undead
         Summoner:
+            Summon powerful mobs made of stone to fight battles (less numerous but more powerful)
+        Dark Blademaster:
+            Give the player a weapon that provides a "kill" or "damage" streak, increasing the damage from the blade
+        Light UNNAMED:
+            Give the player a bow that regenerates the player rapidly, and when shot, knockbacks and slows (maybe) enemies
+                Rapid fire?
+        Hemomancer:
+            Uses blood magic to spread diseases through their enemies
+        Light UNNAMED:
+            Fires meteors at their foes, either from the player or above the target.
 
      */
 }

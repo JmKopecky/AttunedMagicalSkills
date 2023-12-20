@@ -1,16 +1,33 @@
 package dev.prognitio.ams;
 
+import dev.prognitio.ams.networking.ModNetworking;
+import dev.prognitio.ams.networking.SyncAttunedClassDataSC;
+import dev.prognitio.ams.networking.SyncCooldownSC;
+import dev.prognitio.ams.networking.SyncIsDataSetSC;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.network.ConnectionData;
 
 public class PlayerDataStorage {
 
 
     //most of the important stuff regarding the player's attunement class
     private AttunementClass playerAttunementClass;
+    private boolean hasSelectionItemBeenGiven = false;
 
-    public void setAttunementClass(AttunementClass attunementClass) {
+    public void setHasSelectionItemBeenGiven(boolean val) {
+        hasSelectionItemBeenGiven = val;
+    }
+
+    public boolean getHasSelectionItemBeenGiven() {
+        return hasSelectionItemBeenGiven;
+    }
+
+    public void setAttunementClass(Player player, AttunementClass attunementClass) {
         this.playerAttunementClass = attunementClass;
+        this.hasPlayerChosen = true;
+        syncData(player);
     }
 
     public AttunementClass getAttunementClass() {
@@ -57,12 +74,16 @@ public class PlayerDataStorage {
                 recentMaxCooldown = result;
             }
         }
+        syncData(player);
     }
 
 
 
     public void copyFrom(PlayerDataStorage source) {
         this.hasPlayerChosen = source.hasPlayerChosen;
+        this.hasSelectionItemBeenGiven = source.hasSelectionItemBeenGiven;
+        this.cooldown = source.cooldown;
+        this.recentMaxCooldown = source.recentMaxCooldown;
         if (source.getAttunementClass() != null) {
             this.playerAttunementClass = source.getAttunementClass();
         }
@@ -70,9 +91,37 @@ public class PlayerDataStorage {
 
     public void saveNBTData(CompoundTag tag) {
         tag.putBoolean("hasplayerchosen", hasPlayerChosen);
+        tag.putBoolean("hasitembeengiven", hasSelectionItemBeenGiven);
+        tag.putInt("cooldown", cooldown);
+        tag.putInt("maxcooldown", recentMaxCooldown);
+        if (playerAttunementClass != null) {
+            tag.putString("attuneclass", playerAttunementClass.toString());
+        }
     }
 
     public void loadNBTData(CompoundTag tag) {
         this.hasPlayerChosen = tag.getBoolean("hasplayerchosen");
+        this.hasSelectionItemBeenGiven = tag.getBoolean("hasitembeengiven");
+        this.cooldown = tag.getInt("cooldown");
+        this.recentMaxCooldown = tag.getInt("maxcooldown");
+        String attClassStr = tag.getString("attuneclass");
+        if (attClassStr.equals("")) {
+            AttunementClass newClass = AttunementClass.fromString(tag.getString("attuneclass"));
+            if (newClass != null) {
+                playerAttunementClass = newClass;
+            }
+        }
+    }
+
+    public void syncData(Player player) {
+        if (playerAttunementClass == null) {
+            return;
+        }
+        String data = cooldown + ":" + recentMaxCooldown;
+        ModNetworking.sendToPlayer(new SyncCooldownSC(data), (ServerPlayer) player);
+        data = "" + hasPlayerChosen;
+        ModNetworking.sendToPlayer(new SyncIsDataSetSC(data), (ServerPlayer) player);
+        data = playerAttunementClass.toString();
+        ModNetworking.sendToPlayer(new SyncAttunedClassDataSC(data), (ServerPlayer) player);
     }
 }
